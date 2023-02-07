@@ -1,0 +1,112 @@
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose')
+const postSchema = require('../schemas/postSchema.js');
+const post = new mongoose.model('post', postSchema);
+
+router.get('/post', async (req, res) =>
+{
+    await post.find({ options: "Public" })
+        // .populate("postedBy","_id name")
+        // .populate("comments.postedBy","_id name")
+        // .sort('-createdAt')
+        .then((posts) =>
+        {
+            res.json({ posts })
+        }).catch(err =>
+        {
+            console.log(err)
+        })
+});
+
+router.get('/myPost', async (req, res) =>
+{
+    // const post = 
+    // await post.find({postedBy:req.user._id})
+    await post.find({ user_id: req.query.user_id })
+        // .populate("postedBy","_id name")
+        // .populate("comments.postedBy","_id name")
+        // .sort('-createdAt')
+        .then((posts) =>
+        {
+            res.json({ posts })
+        }).catch(err =>
+        {
+            console.log(err)
+        })
+});
+
+router.post('/post', async (req, res) =>
+{
+    const newPost = new post(req.body);
+    await newPost.save((err) =>
+    {
+        if (err) {
+            res.status(500).json({
+                error: 'There was a sever side error!'
+            })
+        }
+        else {
+            res.status(200).json({
+                message: "Post Was inserted Successfully"
+            })
+        }
+    });
+})
+
+router.put('/like', (req, res) =>
+{
+    post.findByIdAndUpdate(req.body.postId, {
+        $push: { like: req.body.postId }
+    }, {
+        new: true
+    }).exec((err, result) =>
+    {
+        if (err) {
+            return res.status(422).json({ error: err })
+        } else {
+            res.json(result)
+        }
+    })
+})
+
+router.put('/unlike', (req, res) =>
+{
+    post.findByIdAndUpdate(req.body.postId, {
+        $pull: { like: req.body.postId }
+    }, {
+        new: true
+    }).exec((err, result) =>
+    {
+        if (err) {
+            return res.status(422).json({ error: err })
+        } else {
+            res.json(result)
+        }
+    })
+})
+
+router.put('/comment',(req,res)=>{
+    const comment = {
+        text:req.body.text,
+        postId:req.body.postId,
+        name: req.body.name,
+        profile_img: req.body.profile_img
+    }
+    post.findByIdAndUpdate(req.body.postId,{
+        $push:{comment:comment}
+    },{
+        new:true
+    })
+    // .populate("comments.postedBy","_id name")
+    // .populate("postedBy","_id name")
+    .exec((err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
+        }else{
+            res.json(result)
+        }
+    })
+})
+
+module.exports = router;
