@@ -1,23 +1,23 @@
-const express = require('express')
 const mongoose = require("mongoose");
+const express = require('express')
 const cors = require('cors')
 const postHandler = require('./routeHandler/postHandler')
 // const signHandle = require('./routeHandler/signHandle')
 const signInSchema = require('./schemas/signSchema')
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
 app.use(cors())
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://localhost/post',{
+mongoose.connect('mongodb://localhost:27017/post',{
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
 .then(() => console.log("Successfully"))
 .catch((err) => console.log(err))
 
-app.use('/post', postHandler)
+app.use('/', postHandler)
 // app.use('/signUp', signHandle)
 
 function errorHandler(err, req, res, next)
@@ -49,7 +49,7 @@ app.post("/register", (req, res)=> {
     const { first_name, surname, email, password, birth_date, img} = req.body
     sign.findOne({email: email}, (err, user) => {
         if(user){
-            res.send({message: "User already registerd"})
+            res.send({error: "User already registerd"})
         } else {
             const user = new sign({
                 first_name,
@@ -73,10 +73,10 @@ app.post("/register", (req, res)=> {
 
 app.get('/', async (req, res) =>
 {
-    res.send('Facebook Clone Server is Running')
+    res.send('Facebook Clone Server is Runnings')
 })
 
 app.listen(port, () =>
 {
-    console.log("app listening at port 4000")
+    console.log(`app listening at port ${port}`)
 })
