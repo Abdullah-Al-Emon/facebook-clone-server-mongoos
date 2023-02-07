@@ -7,9 +7,6 @@ const post = new mongoose.model('post', postSchema);
 router.get('/post', async (req, res) =>
 {
     await post.find({ options: "Public" })
-        // .populate("postedBy","_id name")
-        // .populate("comments.postedBy","_id name")
-        // .sort('-createdAt')
         .then((posts) =>
         {
             res.json({ posts })
@@ -21,12 +18,7 @@ router.get('/post', async (req, res) =>
 
 router.get('/myPost', async (req, res) =>
 {
-    // const post = 
-    // await post.find({postedBy:req.user._id})
     await post.find({ user_id: req.query.user_id })
-        // .populate("postedBy","_id name")
-        // .populate("comments.postedBy","_id name")
-        // .sort('-createdAt')
         .then((posts) =>
         {
             res.json({ posts })
@@ -98,8 +90,6 @@ router.put('/comment',(req,res)=>{
     },{
         new:true
     })
-    // .populate("comments.postedBy","_id name")
-    // .populate("postedBy","_id name")
     .exec((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
