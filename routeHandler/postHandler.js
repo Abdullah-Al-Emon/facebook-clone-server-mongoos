@@ -49,7 +49,7 @@ router.post('/post', async (req, res) =>
 router.put('/like', (req, res) =>
 {
     post.findByIdAndUpdate(req.body.postId, {
-        $push: { like: req.body.postId }
+        $push: { like: req.body.userId }
     }, {
         new: true
     }).exec((err, result) =>
@@ -65,7 +65,7 @@ router.put('/like', (req, res) =>
 router.put('/unlike', (req, res) =>
 {
     post.findByIdAndUpdate(req.body.postId, {
-        $pull: { like: req.body.postId }
+        $pull: { like: req.body.userId }
     }, {
         new: true
     }).exec((err, result) =>
