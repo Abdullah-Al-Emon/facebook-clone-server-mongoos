@@ -10,7 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://localhost:27017/post',{
+
+const mongoUrl = "mongodb+srv://facebook:9kpIPaeYR9iRuRvt@cluster0.dqljuns.mongodb.net/?retryWrites=true&w=majority";
+
+mongoose.connect(mongoUrl,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
