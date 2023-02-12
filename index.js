@@ -38,7 +38,7 @@ app.post("/login", (req, res)=> {
     sign.findOne({ email: email}, (err, user) => {
         if(user){
             if(password === user.password ) {
-                res.send({message: "Login Successfull", user: user})
+                res.send({user: user, message: "Login Successfull"})
             } else {
                 res.send({ error: "Password didn't match"})
             }
@@ -71,8 +71,30 @@ app.post("/register", (req, res)=> {
             })
         }
     })
-    
 }) 
+
+app.put('/register/:id',(req,res)=>{
+    sign.findByIdAndUpdate(req.params.id,{
+        $set: {
+            first_name: req.body.first_name,
+            surname: req.body.surname,
+            img: req.body.img,
+            cover_Img: req.body.cover_Img,
+            student: req.body.student,
+            lives_In: req.body.lives_In,
+            from: req.body.from,
+        }
+    },{
+        new:true
+    })
+    .exec((err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
+        }else{
+            res.json(result)
+        }
+    })
+})
 
 app.get('/', async (req, res) =>
 {
