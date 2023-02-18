@@ -46,6 +46,74 @@ router.post('/post', async (req, res) =>
     });
 })
 
+router.put('/postEdit/:id', (req, res) => {
+    post.findByIdAndUpdate(req.params.id, {
+        $set : {
+            desc: req.body.desc,
+            post_img: req.body.post_img,
+            options: req.body.options
+        }
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if(err){
+            return res.status(422).json({error: err})
+        } else{
+            res.json(result)
+        }
+    })
+})
+
+router.put('/options/:id', (req, res) => {
+    post.findByIdAndUpdate(req.params.id, {
+        $set : {
+            options: req.body.options
+        }
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if(err){
+            return res.status(422).json({error: err})
+        } else{
+            res.json(result)
+        }
+    })
+})
+
+router.put('/cross', (req, res) => {
+    post.findByIdAndUpdate(req.body.postId, {
+        $set: {
+            visibility: req.body.visibility,
+        },
+        $push: {inVisibleUserId: req.body.userId}
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if(err){
+            return res.status(422).json({error: err})
+        } else{
+            res.json(result)
+        }
+    })
+})
+
+router.put('/undo', (req, res) => {
+    post.findByIdAndUpdate(req.body.postId, {
+        $set: {
+            visibility: req.body.visibility,
+        },
+        $pull: {inVisibleUserId: req.body.userId}
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if(err){
+            return res.status(422).json({error: err})
+        } else{
+            res.json(result)
+        }
+    })
+})
+
 router.put('/like', (req, res) =>
 {
     post.findByIdAndUpdate(req.body.postId, {

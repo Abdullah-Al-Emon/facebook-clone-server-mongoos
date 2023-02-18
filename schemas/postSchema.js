@@ -7,6 +7,8 @@ const postSchema = new mongoose.Schema({
     time: String,
     desc: String,
     post_img: String,
+    visibility: String,
+    inVisibleUserId: [{type: Object}],
     user_id: String,
     like: [{type:Object,ref:"User"}],
     comment: [{
