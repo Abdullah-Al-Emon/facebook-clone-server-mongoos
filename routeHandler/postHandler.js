@@ -97,6 +97,17 @@ router.put('/cross', (req, res) => {
     })
 })
 
+router.delete('/postDelete/:id', async(req, res) => {
+   const id = req.params.id;
+   try {
+    const result = await post.findByIdAndDelete(id)
+    res.send(result)
+   }
+   catch(error) {
+    console.log(error.message)
+   }
+})
+
 router.put('/undo', (req, res) => {
     post.findByIdAndUpdate(req.body.postId, {
         $set: {
