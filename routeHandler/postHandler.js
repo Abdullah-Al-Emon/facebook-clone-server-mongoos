@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
 const postSchema = require('../schemas/postSchema.js');
-const post = new mongoose.model('post', postSchema);
+const post = new mongoose.model('posting', postSchema);
 
 router.get('/post', async (req, res) =>
 {
@@ -97,15 +97,12 @@ router.put('/cross', (req, res) => {
     })
 })
 
-router.delete('/postDelete/:id', async(req, res) => {
-   const id = req.params.id;
-   try {
-    const result = await post.findByIdAndDelete(id)
-    res.send(result)
-   }
-   catch(error) {
-    console.log(error.message)
-   }
+router.delete('/postDlt/:id', async(req, res) => {
+    post.findByIdAndDelete(req.params.id).then(dlt => {
+        res.send(dlt)
+    }).catch(error => {
+        res.status(500).send(error)
+    })
 })
 
 router.put('/undo', (req, res) => {
